@@ -11,13 +11,15 @@ Page unique présentant : héro, « Pourquoi nous », services par catégorie de
 
 ## Lancer le site
 
-Ouvrir `Permis Avenir Plus.dc.html` dans un navigateur (une connexion internet est
+Ouvrir `index.html` dans un navigateur (une connexion internet est
 requise : le runtime `support.js` charge React automatiquement).
+
+Site déployé sur **Vercel** (déploiement automatique à chaque push sur `main`).
 
 ## Structure
 
 ```
-Permis Avenir Plus.dc.html   Page (template + données)
+index.html                   Page (template + données)
 support.js                   Runtime (charge React et amorce la page)
 assets/                      Images : héro, avis, galerie, attestations, logo
 ```
