@@ -290,6 +290,14 @@ p{margin:0}
   transition:background .16s ease,color .16s ease;
 }
 .dock nav a:hover{background:var(--stone);color:var(--ink)}
+.dockburger{
+  display:none;align-items:center;justify-content:center;
+  width:40px;height:40px;border-radius:50%;flex:none;
+  border:1px solid var(--line);background:var(--stone);color:var(--ink);cursor:pointer;
+  transition:background .16s ease,border-color .16s ease;
+}
+.dockburger:hover{background:#E4E4DC;border-color:#CFCFC4}
+.dockburger svg{width:19px;height:19px}
 
 /* ========== MOBILE MENU ========== */
 .mmenu{
@@ -538,6 +546,11 @@ details.q p{padding:0 0 18px;font-size:15px;line-height:1.63;color:var(--ink-2)}
   .navpill{display:none}
   .burger{display:inline-flex}
   .dock nav{display:none}
+  /* le bouton flottant et le menu suffisent : on allège les deux barres,
+     et cela supprime le débordement du dock (marque + bouton > largeur dispo) */
+  .topbar__cta,.dock__cta{display:none}
+  .dockburger{display:inline-flex}
+  .dock{padding:7px 7px 7px 15px}
   .faq{grid-template-columns:1fr}
   .faq__aside{position:static}
 }
@@ -624,9 +637,12 @@ details.q p{padding:0 0 18px;font-size:15px;line-height:1.63;color:var(--ink-2)}
     <a href="#avis">Avis</a>
     <a href="#faq">FAQ</a>
   </nav>
-  <a class="btn btn--green btn--sm" href="https://wa.me/33633416395?text=Bonjour%20Permis%20Avenir%20%2B%2C%20je%20souhaite%20%C3%AAtre%20accompagn%C3%A9(e)%20pour%20l'obtention%20de%20mon%20permis%20de%20conduire." target="_blank" rel="noopener noreferrer">
+  <a class="btn btn--green btn--sm dock__cta" href="https://wa.me/33633416395?text=Bonjour%20Permis%20Avenir%20%2B%2C%20je%20souhaite%20%C3%AAtre%20accompagn%C3%A9(e)%20pour%20l'obtention%20de%20mon%20permis%20de%20conduire." target="_blank" rel="noopener noreferrer">
     <svg class="ic" aria-hidden="true"><use href="#i-wa"></use></svg>WhatsApp
   </a>
+  <button class="dockburger" id="burger2" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="mmenu">
+    <svg aria-hidden="true"><use href="#i-menu"></use></svg>
+  </button>
 </div>
 
 <div class="shell" id="top">
@@ -650,7 +666,7 @@ details.q p{padding:0 0 18px;font-size:15px;line-height:1.63;color:var(--ink-2)}
         <a href="#faq">FAQ</a>
       </nav>
 
-      <a class="btn btn--mint btn--sm navpill-cta" href="https://wa.me/33633416395?text=Bonjour%20Permis%20Avenir%20%2B%2C%20je%20souhaite%20%C3%AAtre%20accompagn%C3%A9(e)%20pour%20l'obtention%20de%20mon%20permis%20de%20conduire." target="_blank" rel="noopener noreferrer" style="flex:none">
+      <a class="btn btn--mint btn--sm topbar__cta" href="https://wa.me/33633416395?text=Bonjour%20Permis%20Avenir%20%2B%2C%20je%20souhaite%20%C3%AAtre%20accompagn%C3%A9(e)%20pour%20l'obtention%20de%20mon%20permis%20de%20conduire." target="_blank" rel="noopener noreferrer" style="flex:none">
         <svg class="ic" aria-hidden="true"><use href="#i-wa"></use></svg>WhatsApp
       </a>
 
@@ -1164,18 +1180,23 @@ details.q p{padding:0 0 18px;font-size:15px;line-height:1.63;color:var(--ink-2)}
   }
 
   /* ---- Menu mobile ---- */
-  var burger = document.getElementById('burger');
-  var mmenu  = document.getElementById('mmenu');
-  var mclose = document.getElementById('mclose');
+  var burger  = document.getElementById('burger');   // barre du hero
+  var burger2 = document.getElementById('burger2');  // barre flottante
+  var mmenu   = document.getElementById('mmenu');
+  var mclose  = document.getElementById('mclose');
+  var opener  = burger;                              // pour rendre le focus au bon bouton
   function setMenu(open){
-    if (!mmenu || !burger) return;
+    if (!mmenu) return;
     mmenu.classList.toggle('is-on', open);
-    burger.setAttribute('aria-expanded', String(open));
+    if (burger)  burger.setAttribute('aria-expanded', String(open));
+    if (burger2) burger2.setAttribute('aria-expanded', String(open));
     document.body.style.overflow = open ? 'hidden' : '';
     if (open) { var f = mmenu.querySelector('.mlink'); if (f) f.focus(); }
-    else burger.focus();
+    else if (opener) opener.focus();
   }
-  if (burger) burger.addEventListener('click', function(){ setMenu(true); });
+  [burger, burger2].forEach(function(b){
+    if (b) b.addEventListener('click', function(){ opener = b; setMenu(true); });
+  });
   if (mclose) mclose.addEventListener('click', function(){ setMenu(false); });
   if (mmenu) {
     mmenu.addEventListener('click', function(e){ if (e.target === mmenu) setMenu(false); });
